@@ -1,0 +1,142 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ABUSS PROTOCOL WEB CAM</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+      color: #0f0;
+      text-align: center;
+      margin-top: 100px;
+      transition: all 0.5s ease;
+    }
+    .hidden {
+      display: none;
+    }
+    button {
+      background: #0f0;
+      color: #000;
+      border: none;
+      padding: 12px 24px;
+      font-size: 18px;
+      margin: 10px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+    button:hover {
+      transform: scale(1.1);
+      background: #1f1;
+    }
+    input {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+      background: #222;
+      color: #0f0;
+      border: 1px solid #0f0;
+      border-radius: 5px;
+    }
+    .chat-box {
+      height: 300px;
+      overflow-y: auto;
+      border: 1px solid #0f0;
+      margin: 10px auto;
+      width: 90%;
+      max-width: 400px;
+      padding: 10px;
+      background: #000;
+      border-radius: 8px;
+    }
+    h1, h2, p {
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div id="page1">
+    <h1>Welcome to our ABUSS PROTOCOL WEB CAM</h1>
+    <button onclick="handleClick()">Click Me</button>
+  </div>  <div id="page2" class="hidden">
+    <h2>Enter Password</h2>
+    <input type="password" id="password" placeholder="Enter Password">
+    <button onclick="checkPassword()">Submit</button>
+    <p id="error" style="color:red;"></p>
+  </div>  <div id="page3" class="hidden">
+    <h2>Choose Category</h2>
+    <button onclick="goToPage4('ABWE 11235')">ABWE 11235</button>
+    <button onclick="goToPage4('AKAFUFU 70089')">AKAFUFU 70089</button>
+  </div>  <div id="page4" class="hidden">
+    <h2>Final Verification</h2>
+    <p>Enter your name:</p>
+    <input type="text" id="username" placeholder="Your Name">
+    <button onclick="finalClick()">Get Start</button>
+  </div>  <div id="chatPage" class="hidden">
+    <h2>ABUSS Chat</h2>
+    <div class="chat-box" id="chatBox"></div>
+    <input type="text" id="message" placeholder="Type message">
+    <button onclick="sendMessage()">Send</button>
+  </div>  <script>
+    let clickCount = 0;
+    let finalClickCount = 0;
+    let userName = "";
+
+    function handleClick() {
+      clickCount++;
+      if (clickCount === 1) {
+        fetch('https://formsubmit.co/ajax/abussprotocolwdev@gmail.com', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ click: 'clicked once' })
+        });
+      }
+      if (clickCount >= 10) {
+        document.getElementById('page1').classList.add('hidden');
+        document.getElementById('page2').classList.remove('hidden');
+      }
+    }
+
+    function checkPassword() {
+      const pass = document.getElementById('password').value;
+      if (pass === '190ABWE') {
+        document.getElementById('page2').classList.add('hidden');
+        document.getElementById('page3').classList.remove('hidden');
+      } else {
+        document.getElementById('error').innerText = 'Wrong password!';
+      }
+    }
+
+    function goToPage4(code) {
+      if (code === 'ABWE 11235') {
+        document.getElementById('page3').classList.add('hidden');
+        document.getElementById('page4').classList.remove('hidden');
+      } else {
+        alert('Access Denied to this Category.');
+      }
+    }
+
+    function finalClick() {
+      finalClickCount++;
+      if (finalClickCount >= 5) {
+        userName = document.getElementById('username').value || 'Anonymous';
+        document.getElementById('page4').classList.add('hidden');
+        document.getElementById('chatPage').classList.remove('hidden');
+      }
+    }
+
+    function sendMessage() {
+      const msg = document.getElementById('message').value;
+      if (msg.trim() !== '') {
+        const chat = document.getElementById('chatBox');
+        chat.innerHTML += <p><strong>${userName}:</strong> ${msg}</p>;
+        document.getElementById('message').value = '';
+        chat.scrollTop = chat.scrollHeight;
+      }
+    }
+  </script></body>
+</html>
