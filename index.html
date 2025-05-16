@@ -1,142 +1,180 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ABUSS PROTOCOL WEB CAM</title>
   <style>
     body {
+      margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
-      color: #0f0;
+      background-color: #0a0a0a;
+      color: #fff;
       text-align: center;
-      margin-top: 100px;
-      transition: all 0.5s ease;
+      overflow: hidden;
     }
-    .hidden {
+
+    .page {
       display: none;
-    }
-    button {
-      background: #0f0;
-      color: #000;
-      border: none;
-      padding: 12px 24px;
-      font-size: 18px;
-      margin: 10px;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: transform 0.3s ease, background 0.3s ease;
-    }
-    button:hover {
-      transform: scale(1.1);
-      background: #1f1;
-    }
-    input {
-      padding: 10px;
-      margin: 10px;
-      font-size: 16px;
-      background: #222;
-      color: #0f0;
-      border: 1px solid #0f0;
-      border-radius: 5px;
-    }
-    .chat-box {
-      height: 300px;
-      overflow-y: auto;
-      border: 1px solid #0f0;
-      margin: 10px auto;
-      width: 90%;
-      max-width: 400px;
-      padding: 10px;
-      background: #000;
-      border-radius: 8px;
-    }
-    h1, h2, p {
+      padding: 40px;
       animation: fadeIn 1s ease-in-out;
     }
+
+    #page1 {
+      display: block;
+    }
+
+    button {
+      padding: 15px 30px;
+      margin: 20px;
+      font-size: 18px;
+      background-color: #222;
+      color: white;
+      border: 2px solid #444;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #333;
+      transform: scale(1.05);
+    }
+
+    input, select {
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: none;
+      background: #1a1a1a;
+      color: #fff;
+    }
+
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .chat-box {
+      background-color: #111;
+      padding: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+      border-radius: 10px;
+      margin: 20px auto;
+      width: 80%;
+      text-align: left;
+    }
+
+    .chat-box div {
+      margin: 5px 0;
     }
   </style>
 </head>
 <body>
-  <div id="page1">
+
+  <!-- PAGE 1 -->
+  <div id="page1" class="page">
     <h1>Welcome to our ABUSS PROTOCOL WEB CAM</h1>
     <button onclick="handleClick()">Click Me</button>
-  </div>  <div id="page2" class="hidden">
+    <p id="status"></p>
+  </div>
+
+  <!-- PAGE 2 -->
+  <div id="page2" class="page">
     <h2>Enter Password</h2>
-    <input type="password" id="password" placeholder="Enter Password">
+    <input type="password" id="passwordInput" placeholder="Enter password">
     <button onclick="checkPassword()">Submit</button>
-    <p id="error" style="color:red;"></p>
-  </div>  <div id="page3" class="hidden">
+    <p id="errorMsg" style="color:red;"></p>
+  </div>
+
+  <!-- PAGE 3 -->
+  <div id="page3" class="page">
     <h2>Choose Category</h2>
-    <button onclick="goToPage4('ABWE 11235')">ABWE 11235</button>
-    <button onclick="goToPage4('AKAFUFU 70089')">AKAFUFU 70089</button>
-  </div>  <div id="page4" class="hidden">
-    <h2>Final Verification</h2>
-    <p>Enter your name:</p>
-    <input type="text" id="username" placeholder="Your Name">
-    <button onclick="finalClick()">Get Start</button>
-  </div>  <div id="chatPage" class="hidden">
-    <h2>ABUSS Chat</h2>
+    <select id="category">
+      <option value="">--Select--</option>
+      <option value="ABWE11235">ABWE 11235</option>
+      <option value="AKAFUFU70089">AKAFUFU 70089</option>
+    </select>
+    <button onclick="goToPage4()">Next</button>
+  </div>
+
+  <!-- PAGE 4 -->
+  <div id="page4" class="page">
+    <h2>Access Platform</h2>
+    <input type="text" id="username" placeholder="Enter your name">
+    <button onclick="startPlatform()">Get Start</button>
+    <p id="startClicks">(Click 5 times)</p>
+  </div>
+
+  <!-- CHAT PAGE -->
+  <div id="chatPage" class="page">
+    <h2>ABUSS CHAT</h2>
     <div class="chat-box" id="chatBox"></div>
-    <input type="text" id="message" placeholder="Type message">
+    <input type="text" id="messageInput" placeholder="Type a message">
     <button onclick="sendMessage()">Send</button>
-  </div>  <script>
+  </div>
+
+  <script>
     let clickCount = 0;
-    let finalClickCount = 0;
+    let startClickCount = 0;
     let userName = "";
 
     function handleClick() {
       clickCount++;
       if (clickCount === 1) {
-        fetch('https://formsubmit.co/ajax/abussprotocolwdev@gmail.com', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ click: 'clicked once' })
-        });
+        document.getElementById("status").innerText = "Connection request sent to abussprotocolwdev@gmail.com";
       }
       if (clickCount >= 10) {
-        document.getElementById('page1').classList.add('hidden');
-        document.getElementById('page2').classList.remove('hidden');
+        showPage("page2");
       }
     }
 
     function checkPassword() {
-      const pass = document.getElementById('password').value;
-      if (pass === '190ABWE') {
-        document.getElementById('page2').classList.add('hidden');
-        document.getElementById('page3').classList.remove('hidden');
+      const password = document.getElementById("passwordInput").value;
+      if (password === "190ABWE") {
+        showPage("page3");
       } else {
-        document.getElementById('error').innerText = 'Wrong password!';
+        document.getElementById("errorMsg").innerText = "Incorrect password!";
       }
     }
 
-    function goToPage4(code) {
-      if (code === 'ABWE 11235') {
-        document.getElementById('page3').classList.add('hidden');
-        document.getElementById('page4').classList.remove('hidden');
+    function goToPage4() {
+      const cat = document.getElementById("category").value;
+      if (cat === "ABWE11235") {
+        showPage("page4");
       } else {
-        alert('Access Denied to this Category.');
+        alert("Invalid category or not supported yet.");
       }
     }
 
-    function finalClick() {
-      finalClickCount++;
-      if (finalClickCount >= 5) {
-        userName = document.getElementById('username').value || 'Anonymous';
-        document.getElementById('page4').classList.add('hidden');
-        document.getElementById('chatPage').classList.remove('hidden');
+    function startPlatform() {
+      startClickCount++;
+      document.getElementById("startClicks").innerText = `Clicks: ${startClickCount} / 5`;
+      if (startClickCount >= 5) {
+        userName = document.getElementById("username").value || "Unknown";
+        showPage("chatPage");
       }
     }
 
     function sendMessage() {
-      const msg = document.getElementById('message').value;
-      if (msg.trim() !== '') {
-        const chat = document.getElementById('chatBox');
-        chat.innerHTML += <p><strong>${userName}:</strong> ${msg}</p>;
-        document.getElementById('message').value = '';
-        chat.scrollTop = chat.scrollHeight;
-      }
+      const msg = document.getElementById("messageInput").value;
+      if (msg.trim() === "") return;
+      const box = document.getElementById("chatBox");
+      const entry = document.createElement("div");
+      entry.innerText = `${userName}: ${msg}`;
+      box.appendChild(entry);
+      document.getElementById("messageInput").value = "";
+      box.scrollTop = box.scrollHeight;
     }
-  </script></body>
+
+    function showPage(pageId) {
+      const pages = document.querySelectorAll(".page");
+      pages.forEach(p => p.style.display = "none");
+      document.getElementById(pageId).style.display = "block";
+    }
+  </script>
+
+</body>
 </html>
